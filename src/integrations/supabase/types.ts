@@ -88,6 +88,33 @@ export type Database = {
           },
         ]
       }
+      messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_read: boolean
+          recipient_id: string
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          recipient_id: string
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          recipient_id?: string
+          sender_id?: string
+        }
+        Relationships: []
+      }
       onboarding_forms: {
         Row: {
           client_id: string | null
@@ -191,7 +218,13 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "staff" | "user"
+      app_role:
+        | "admin"
+        | "staff"
+        | "user"
+        | "ceo"
+        | "operations_manager"
+        | "brand_manager"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -319,7 +352,14 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "staff", "user"],
+      app_role: [
+        "admin",
+        "staff",
+        "user",
+        "ceo",
+        "operations_manager",
+        "brand_manager",
+      ],
     },
   },
 } as const
