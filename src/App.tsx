@@ -13,7 +13,8 @@ import Tasks from "./pages/Tasks";
 import Invoices from "./pages/Invoices";
 import Onboarding from "./pages/Onboarding";
 import SubmitForm from "./pages/SubmitForm";
-import { Documents, Messages, CalendarPage, Analytics, SettingsPage } from "./pages/PlaceholderPages";
+import { Documents, CalendarPage, Analytics, SettingsPage } from "./pages/PlaceholderPages";
+import Messages from "./pages/Messages";
 import AppLayout from "./components/layout/AppLayout";
 import NotFound from "./pages/NotFound";
 

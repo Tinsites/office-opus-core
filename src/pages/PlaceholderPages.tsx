@@ -30,7 +30,7 @@ const PlaceholderPage = ({ title, description }: PlaceholderPageProps) => (
 );
 
 export const Documents = () => <PlaceholderPage title="Documents" description="Manage and share files" />;
-export const Messages = () => <PlaceholderPage title="Messages" description="Internal team messaging" />;
+
 export const CalendarPage = () => <PlaceholderPage title="Calendar" description="Schedule client follow-ups" />;
 export const Analytics = () => <PlaceholderPage title="Analytics" description="Activity logs and insights" />;
 export const SettingsPage = () => <PlaceholderPage title="Settings" description="Manage your workspace" />;
