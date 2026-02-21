@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   LayoutDashboard,
@@ -12,7 +12,9 @@ import {
   Settings,
   LogOut,
   FolderOpen,
+  ClipboardList,
 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const navItems = [
   { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
@@ -20,6 +22,7 @@ const navItems = [
   { to: "/projects", icon: FolderKanban, label: "Projects" },
   { to: "/tasks", icon: CheckSquare, label: "Tasks" },
   { to: "/invoices", icon: FileText, label: "Invoices" },
+  { to: "/onboarding", icon: ClipboardList, label: "Onboarding" },
   { to: "/documents", icon: FolderOpen, label: "Documents" },
   { to: "/messages", icon: MessageSquare, label: "Messages" },
   { to: "/calendar", icon: Calendar, label: "Calendar" },
@@ -28,6 +31,13 @@ const navItems = [
 
 const AppSidebar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
 
   return (
     <motion.aside
@@ -81,13 +91,13 @@ const AppSidebar = () => {
           <Settings size={18} />
           <span>Settings</span>
         </NavLink>
-        <NavLink
-          to="/"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground transition-all"
+        <button
+          onClick={handleSignOut}
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground transition-all w-full"
         >
           <LogOut size={18} />
           <span>Sign Out</span>
-        </NavLink>
+        </button>
       </div>
     </motion.aside>
   );
