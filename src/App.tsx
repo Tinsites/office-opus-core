@@ -13,7 +13,12 @@ import Tasks from "./pages/Tasks";
 import Invoices from "./pages/Invoices";
 import Onboarding from "./pages/Onboarding";
 import SubmitForm from "./pages/SubmitForm";
-import { Documents, CalendarPage, Analytics, SettingsPage } from "./pages/PlaceholderPages";
+import Documents from "./pages/Documents";
+import CalendarPage from "./pages/CalendarPage";
+import Analytics from "./pages/Analytics";
+import Settings from "./pages/Settings";
+import Prospecting from "./pages/Prospecting";
+import PublicInvoice from "./pages/PublicInvoice";
 import Messages from "./pages/Messages";
 import AppLayout from "./components/layout/AppLayout";
 import NotFound from "./pages/NotFound";
@@ -30,6 +35,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/submit/:formId" element={<SubmitForm />} />
+            <Route path="/invoice/:token" element={<PublicInvoice />} />
             <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/clients" element={<Clients />} />
@@ -41,7 +47,8 @@ const App = () => (
               <Route path="/messages" element={<Messages />} />
               <Route path="/calendar" element={<CalendarPage />} />
               <Route path="/analytics" element={<Analytics />} />
-              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/prospecting" element={<Prospecting />} />
+              <Route path="/settings" element={<Settings />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
