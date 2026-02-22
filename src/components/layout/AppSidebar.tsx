@@ -13,6 +13,7 @@ import {
   LogOut,
   FolderOpen,
   ClipboardList,
+  Target,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -26,6 +27,7 @@ const navItems = [
   { to: "/documents", icon: FolderOpen, label: "Documents" },
   { to: "/messages", icon: MessageSquare, label: "Messages" },
   { to: "/calendar", icon: Calendar, label: "Calendar" },
+  { to: "/prospecting", icon: Target, label: "Prospecting" },
   { to: "/analytics", icon: BarChart3, label: "Analytics" },
 ];
 
