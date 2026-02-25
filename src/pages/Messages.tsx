@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Send, Search, Circle } from "lucide-react";
+import { Send, Search, Circle, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
@@ -168,9 +168,9 @@ const Messages = () => {
   });
 
   return (
-    <div className="flex h-[calc(100vh-0px)]">
+    <div className="flex h-[calc(100vh-0px)] pt-14 md:pt-0">
       {/* Sidebar - Conversations */}
-      <div className="w-80 border-r border-border flex flex-col bg-card">
+      <div className={`${selectedUser ? "hidden md:flex" : "flex"} w-full md:w-80 border-r border-border flex-col bg-card`}>
         <div className="p-4 border-b border-border">
           <h1 className="text-lg font-display font-bold text-foreground mb-3">Messages</h1>
           <div className="relative">
@@ -223,11 +223,14 @@ const Messages = () => {
       </div>
 
       {/* Chat area */}
-      <div className="flex-1 flex flex-col">
+      <div className={`${selectedUser ? "flex" : "hidden md:flex"} flex-1 flex-col min-w-0`}>
         {selectedUser ? (
           <>
             {/* Chat header */}
-            <div className="h-16 border-b border-border flex items-center px-6 bg-card">
+            <div className="h-16 border-b border-border flex items-center px-4 sm:px-6 bg-card gap-3">
+              <button onClick={() => setSelectedUser(null)} className="md:hidden p-1 rounded hover:bg-muted text-muted-foreground">
+                <X size={18} />
+              </button>
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full gradient-orange flex items-center justify-center text-primary-foreground font-display font-bold text-sm">
                   {getProfileName(selectedUser).charAt(0)}

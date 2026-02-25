@@ -131,8 +131,8 @@ const Onboarding = () => {
   };
 
   return (
-    <div className="p-8 max-w-5xl mx-auto">
-      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between mb-6">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto pt-16 md:pt-4">
+      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-display font-bold text-foreground">Client Onboarding</h1>
           <p className="text-muted-foreground text-sm mt-1">Create dynamic forms for clients to submit their data</p>

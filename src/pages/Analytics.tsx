@@ -65,7 +65,7 @@ const Analytics = () => {
   if (!data) return null;
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto pt-16 md:pt-4">
       <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
         <h1 className="text-2xl font-display font-bold text-foreground">Analytics</h1>
         <p className="text-muted-foreground text-sm mt-1">Performance insights and KPIs</p>
@@ -81,7 +81,7 @@ const Analytics = () => {
         </motion.div>
       )}
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
         {[
           { label: "Total Revenue", value: `$${data.totalRevenue.toLocaleString()}`, icon: TrendingUp },
           { label: "Task Completion", value: `${data.completionRate}%`, icon: Target },
@@ -95,7 +95,7 @@ const Analytics = () => {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         <div className="bg-card border border-border rounded-xl p-5 shadow-card">
           <h3 className="font-display font-semibold text-foreground mb-4">Projects by Status</h3>
           {data.projectStatusData.length > 0 ? (

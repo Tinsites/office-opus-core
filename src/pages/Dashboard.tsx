@@ -58,18 +58,18 @@ const Dashboard = () => {
   if (loading) return <div className="flex items-center justify-center h-full py-20"><div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin" /></div>;
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between mb-8">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto pt-16 md:pt-4">
+      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
         <div>
-          <h1 className="text-2xl font-display font-bold text-foreground">Dashboard</h1>
+          <h1 className="text-xl sm:text-2xl font-display font-bold text-foreground">Dashboard</h1>
           <p className="text-muted-foreground text-sm mt-1">Welcome back — here's your overview.</p>
         </div>
-        <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => navigate("/projects")} className="h-10 px-5 gradient-orange rounded-lg text-primary-foreground text-sm font-semibold flex items-center gap-2 shadow-orange">
+        <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => navigate("/projects")} className="h-10 px-5 gradient-orange rounded-lg text-primary-foreground text-sm font-semibold flex items-center gap-2 shadow-orange self-start sm:self-auto">
           <Plus size={16} /> New Project
         </motion.button>
       </motion.div>
 
-      <motion.div variants={container} initial="hidden" animate="show" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <motion.div variants={container} initial="hidden" animate="show" className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
         {statCards.map((stat) => (
           <motion.div key={stat.label} variants={item} className="bg-card border border-border rounded-xl p-5 shadow-card hover:shadow-card-hover transition-shadow">
             <div className="flex items-center justify-between mb-3">
@@ -81,7 +81,7 @@ const Dashboard = () => {
         ))}
       </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6">
         <motion.div variants={container} initial="hidden" animate="show" className="lg:col-span-3 bg-card border border-border rounded-xl shadow-card">
           <div className="px-5 py-4 border-b border-border flex items-center justify-between">
             <h2 className="font-display font-semibold text-foreground">Active Projects</h2>
