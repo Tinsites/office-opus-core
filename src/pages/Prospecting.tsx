@@ -95,8 +95,8 @@ const Prospecting = () => {
   const converted = prospects.filter(p => p.follow_up_status === "converted").length;
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between mb-6">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto pt-16 md:pt-4">
+      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-display font-bold text-foreground">Prospecting</h1>
           <p className="text-muted-foreground text-sm mt-1">Track outreach and conversions</p>
@@ -106,7 +106,7 @@ const Prospecting = () => {
         </motion.button>
       </motion.div>
 
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
         {[
           { label: "Total Outreach", value: totalOutreach },
           { label: "Response Rate", value: `${responseRate}%` },
@@ -129,8 +129,8 @@ const Prospecting = () => {
       ) : filtered.length === 0 ? (
         <div className="bg-card border border-border rounded-xl p-12 shadow-card text-center"><p className="text-muted-foreground">No prospects yet.</p></div>
       ) : (
-        <motion.div variants={container} initial="hidden" animate="show" className="bg-card border border-border rounded-xl shadow-card overflow-hidden">
-          <table className="w-full">
+        <motion.div variants={container} initial="hidden" animate="show" className="bg-card border border-border rounded-xl shadow-card overflow-x-auto">
+          <table className="w-full min-w-[600px]">
             <thead>
               <tr className="border-b border-border bg-muted/30">
                 <th className="text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider px-5 py-3">Company</th>

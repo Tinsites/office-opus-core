@@ -93,8 +93,8 @@ const CalendarPage = () => {
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between mb-6">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto pt-16 md:pt-4">
+      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-display font-bold text-foreground">Calendar</h1>
           <p className="text-muted-foreground text-sm mt-1">Schedule and track events</p>
@@ -121,16 +121,16 @@ const CalendarPage = () => {
           <button onClick={() => setCurrentDate(new Date(year, month + 1))} className="p-1 rounded hover:bg-muted"><ChevronRight size={18} /></button>
         </div>
 
-        <div className="grid grid-cols-7">
-          {days.map(d => <div key={d} className="px-2 py-2 text-center text-[10px] font-semibold uppercase text-muted-foreground border-b border-border">{d}</div>)}
+        <div className="grid grid-cols-7 overflow-x-auto">
+          {days.map(d => <div key={d} className="px-1 sm:px-2 py-2 text-center text-[9px] sm:text-[10px] font-semibold uppercase text-muted-foreground border-b border-border">{d}</div>)}
           {cells.map((day, i) => {
             const dayEvents = day ? getEventsForDay(day) : [];
             const isToday = day === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear();
             return (
-              <div key={i} onClick={() => day && openAddForDate(day)} className={`min-h-[80px] p-1 border-b border-r border-border cursor-pointer hover:bg-muted/30 transition-colors ${!day ? "bg-muted/10" : ""}`}>
+              <div key={i} onClick={() => day && openAddForDate(day)} className={`min-h-[48px] sm:min-h-[80px] p-0.5 sm:p-1 border-b border-r border-border cursor-pointer hover:bg-muted/30 transition-colors ${!day ? "bg-muted/10" : ""}`}>
                 {day && (
                   <>
-                    <span className={`text-xs font-medium inline-flex w-6 h-6 items-center justify-center rounded-full ${isToday ? "gradient-orange text-primary-foreground" : "text-foreground"}`}>{day}</span>
+                    <span className={`text-[10px] sm:text-xs font-medium inline-flex w-5 h-5 sm:w-6 sm:h-6 items-center justify-center rounded-full ${isToday ? "gradient-orange text-primary-foreground" : "text-foreground"}`}>{day}</span>
                     {dayEvents.map(ev => (
                       <div key={ev.id} onClick={(e) => { e.stopPropagation(); setEditing(ev); setForm({ title: ev.title, description: ev.description || "", event_type: ev.event_type, is_quarterly_goal: ev.is_quarterly_goal, start_date: ev.start_date.slice(0, 10), end_date: ev.end_date?.slice(0, 10) || "" }); setShowForm(true); }}
                         className={`text-[10px] px-1 py-0.5 rounded mt-0.5 truncate ${ev.is_quarterly_goal ? "bg-primary/10 text-primary font-semibold" : ev.event_type === "milestone" ? "bg-accent text-accent-foreground" : "bg-muted text-muted-foreground"}`}>

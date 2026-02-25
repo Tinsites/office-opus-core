@@ -112,10 +112,10 @@ const Tasks = () => {
   const remaining = tasks.filter(t => !t.is_completed).length;
 
   return (
-    <div className="p-8 max-w-5xl mx-auto">
-      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between mb-6">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto pt-16 md:pt-4">
+      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-display font-bold text-foreground">Tasks</h1>
+          <h1 className="text-xl sm:text-2xl font-display font-bold text-foreground">Tasks</h1>
           <p className="text-muted-foreground text-sm mt-1">{remaining} tasks remaining</p>
         </div>
         <div className="flex items-center gap-3">
@@ -150,24 +150,28 @@ const Tasks = () => {
       ) : (
         <motion.div variants={container} initial="hidden" animate="show" className="bg-card border border-border rounded-xl shadow-card divide-y divide-border">
           {filtered.map((task) => (
-            <motion.div key={task.id} variants={item} className={`flex items-center gap-4 px-5 py-4 hover:bg-muted/30 transition-colors cursor-pointer ${task.is_completed ? "opacity-50" : ""}`}>
-              <button onClick={() => toggleComplete(task)} className="text-muted-foreground hover:text-primary transition-colors">
+            <motion.div key={task.id} variants={item} className={`flex items-start sm:items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3 sm:py-4 hover:bg-muted/30 transition-colors cursor-pointer ${task.is_completed ? "opacity-50" : ""}`}>
+              <button onClick={() => toggleComplete(task)} className="text-muted-foreground hover:text-primary transition-colors mt-0.5 sm:mt-0 shrink-0">
                 {task.is_completed ? <CheckSquare size={18} className="text-primary" /> : <Circle size={18} />}
               </button>
               <div className="flex-1 min-w-0">
                 <p className={`text-sm font-medium ${task.is_completed ? "line-through text-muted-foreground" : "text-foreground"}`}>{task.title}</p>
                 <p className="text-xs text-muted-foreground mt-0.5">{task.projects?.name || "No project"}</p>
+                <div className="flex items-center gap-2 mt-1.5 sm:hidden flex-wrap">
+                  <span className={`text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full ${priorityStyles[task.priority]}`}>{task.priority}</span>
+                  {task.due_date && <span className="text-[10px] text-muted-foreground flex items-center gap-1"><Clock size={10} />{new Date(task.due_date).toLocaleDateString()}</span>}
+                </div>
               </div>
               {task.assignee_profile?.full_name && (
-                <div className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center text-xs font-medium text-secondary-foreground">
+                <div className="hidden sm:flex w-7 h-7 rounded-full bg-secondary items-center justify-center text-xs font-medium text-secondary-foreground shrink-0">
                   {task.assignee_profile.full_name.split(" ").map(n => n[0]).join("").slice(0, 2)}
                 </div>
               )}
-              <span className={`text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full ${priorityStyles[task.priority]}`}>
+              <span className={`hidden sm:inline text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full ${priorityStyles[task.priority]}`}>
                 {task.priority}
               </span>
               {task.due_date && (
-                <div className="flex items-center gap-1 text-xs text-muted-foreground min-w-[70px]">
+                <div className="hidden sm:flex items-center gap-1 text-xs text-muted-foreground min-w-[70px]">
                   <Clock size={12} /> {new Date(task.due_date).toLocaleDateString()}
                 </div>
               )}
