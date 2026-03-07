@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Plus, DollarSign, Send, CheckCircle, Clock, Download, Link2, MoreHorizontal } from "lucide-react";
+import { Plus, DollarSign, Send, CheckCircle, Clock, Download, Link2, MoreHorizontal, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
@@ -106,6 +106,13 @@ const Invoices = () => {
     fetchAll();
   };
 
+  const handleDelete = async (id: string) => {
+    const { error } = await supabase.from("invoices").delete().eq("id", id);
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    toast({ title: "Invoice deleted" });
+    fetchAll();
+  };
+
   const copyPublicLink = (token: string | null) => {
     if (!token) return;
     const url = `${window.location.origin}/invoice/${token}`;
@@ -194,8 +201,10 @@ const Invoices = () => {
                         <DropdownMenuContent align="end">
                           {inv.status !== "paid" && <DropdownMenuItem onClick={() => updateStatus(inv.id, "paid")}><CheckCircle size={14} className="mr-2" /> Mark Paid</DropdownMenuItem>}
                           {inv.status === "draft" && <DropdownMenuItem onClick={() => updateStatus(inv.id, "sent")}><Send size={14} className="mr-2" /> Mark Sent</DropdownMenuItem>}
+                          {inv.status === "sent" && <DropdownMenuItem onClick={() => updateStatus(inv.id, "overdue")}><Clock size={14} className="mr-2" /> Mark Overdue</DropdownMenuItem>}
                           <DropdownMenuItem onClick={() => copyPublicLink(inv.public_token)}><Link2 size={14} className="mr-2" /> Copy Link</DropdownMenuItem>
                           <DropdownMenuItem onClick={() => downloadPdf(inv)}><Download size={14} className="mr-2" /> Download PDF</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDelete(inv.id)} className="text-destructive"><Trash2 size={14} className="mr-2" /> Delete</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </td>
@@ -234,6 +243,9 @@ const Invoices = () => {
                 <div key={i} className="flex gap-2 mb-2">
                   <input value={li.description} onChange={(e) => { const n = [...lineItems]; n[i].description = e.target.value; setLineItems(n); }} className="flex-1 h-10 px-3 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring/40" placeholder="Description" />
                   <input type="number" value={li.amount || ""} onChange={(e) => { const n = [...lineItems]; n[i].amount = parseFloat(e.target.value) || 0; setLineItems(n); }} className="w-28 h-10 px-3 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring/40" placeholder="Amount" />
+                  {lineItems.length > 1 && (
+                    <button type="button" onClick={() => setLineItems(lineItems.filter((_, idx) => idx !== i))} className="p-2 text-destructive hover:bg-destructive/10 rounded-lg"><Trash2 size={14} /></button>
+                  )}
                 </div>
               ))}
               <button type="button" onClick={() => setLineItems([...lineItems, { description: "", amount: 0 }])} className="text-xs text-primary font-medium hover:underline">+ Add line item</button>
