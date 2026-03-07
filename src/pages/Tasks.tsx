@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { CheckSquare, Circle, Clock, Plus, Filter } from "lucide-react";
+import { CheckSquare, Circle, Clock, Plus, Filter, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
@@ -44,10 +44,11 @@ const Tasks = () => {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState<Task | null>(null);
   const [filterStatus, setFilterStatus] = useState<string | null>(null);
   const [filterPriority, setFilterPriority] = useState<string | null>(null);
   const [filterProject, setFilterProject] = useState<string | null>(null);
-  const [form, setForm] = useState({ title: "", description: "", project_id: "", assignee_id: "", priority: "medium", due_date: "" });
+  const [form, setForm] = useState({ title: "", description: "", project_id: "", assignee_id: "", priority: "medium", due_date: "", status: "todo" });
 
   const fetchAll = async () => {
     const [{ data: t }, { data: p }, { data: pr }] = await Promise.all([
@@ -70,25 +71,56 @@ const Tasks = () => {
   useEffect(() => { fetchAll(); }, []);
 
   const resetForm = () => {
-    setForm({ title: "", description: "", project_id: "", assignee_id: "", priority: "medium", due_date: "" });
+    setForm({ title: "", description: "", project_id: "", assignee_id: "", priority: "medium", due_date: "", status: "todo" });
+    setEditing(null);
     setShowForm(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.title.trim()) return;
-    const { error } = await supabase.from("tasks").insert({
+
+    const payload = {
       title: form.title,
       description: form.description || null,
       project_id: form.project_id || null,
       assignee_id: form.assignee_id || null,
       priority: form.priority as any,
       due_date: form.due_date || null,
-      created_by: user?.id,
-    });
-    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
-    toast({ title: "Task created" });
+      status: form.status as any,
+    };
+
+    if (editing) {
+      const { error } = await supabase.from("tasks").update(payload).eq("id", editing.id);
+      if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+      toast({ title: "Task updated" });
+    } else {
+      const { error } = await supabase.from("tasks").insert({ ...payload, created_by: user?.id });
+      if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+      toast({ title: "Task created" });
+    }
     resetForm();
+    fetchAll();
+  };
+
+  const handleEdit = (task: Task) => {
+    setEditing(task);
+    setForm({
+      title: task.title,
+      description: task.description || "",
+      project_id: task.project_id || "",
+      assignee_id: task.assignee_id || "",
+      priority: task.priority,
+      due_date: task.due_date || "",
+      status: task.status,
+    });
+    setShowForm(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    const { error } = await supabase.from("tasks").delete().eq("id", id);
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    toast({ title: "Task deleted" });
     fetchAll();
   };
 
@@ -135,7 +167,7 @@ const Tasks = () => {
               <DropdownMenuItem onClick={() => setFilterPriority("low")}>Low Priority</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => setShowForm(true)} className="h-10 px-5 gradient-orange rounded-lg text-primary-foreground text-sm font-semibold flex items-center gap-2 shadow-orange">
+          <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => { resetForm(); setShowForm(true); }} className="h-10 px-5 gradient-orange rounded-lg text-primary-foreground text-sm font-semibold flex items-center gap-2 shadow-orange">
             <Plus size={16} /> Add Task
           </motion.button>
         </div>
@@ -150,7 +182,7 @@ const Tasks = () => {
       ) : (
         <motion.div variants={container} initial="hidden" animate="show" className="bg-card border border-border rounded-xl shadow-card divide-y divide-border">
           {filtered.map((task) => (
-            <motion.div key={task.id} variants={item} className={`flex items-start sm:items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3 sm:py-4 hover:bg-muted/30 transition-colors cursor-pointer ${task.is_completed ? "opacity-50" : ""}`}>
+            <motion.div key={task.id} variants={item} className={`flex items-start sm:items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3 sm:py-4 hover:bg-muted/30 transition-colors group ${task.is_completed ? "opacity-50" : ""}`}>
               <button onClick={() => toggleComplete(task)} className="text-muted-foreground hover:text-primary transition-colors mt-0.5 sm:mt-0 shrink-0">
                 {task.is_completed ? <CheckSquare size={18} className="text-primary" /> : <Circle size={18} />}
               </button>
@@ -175,6 +207,17 @@ const Tasks = () => {
                   <Clock size={12} /> {new Date(task.due_date).toLocaleDateString()}
                 </div>
               )}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="p-1 rounded-md hover:bg-muted transition-colors text-muted-foreground opacity-0 group-hover:opacity-100 shrink-0">
+                    <MoreHorizontal size={16} />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => handleEdit(task)}><Pencil size={14} className="mr-2" /> Edit</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleDelete(task.id)} className="text-destructive"><Trash2 size={14} className="mr-2" /> Delete</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </motion.div>
           ))}
         </motion.div>
@@ -182,7 +225,7 @@ const Tasks = () => {
 
       <Dialog open={showForm} onOpenChange={(open) => { if (!open) resetForm(); }}>
         <DialogContent>
-          <DialogHeader><DialogTitle>Add Task</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>{editing ? "Edit Task" : "Add Task"}</DialogTitle></DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4 mt-2">
             <div>
               <label className="block text-sm font-medium text-foreground mb-1">Title *</label>
@@ -208,7 +251,7 @@ const Tasks = () => {
                 </select>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-3 gap-3">
               <div>
                 <label className="block text-sm font-medium text-foreground mb-1">Priority</label>
                 <select value={form.priority} onChange={(e) => setForm({ ...form, priority: e.target.value })} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring/40">
@@ -218,13 +261,21 @@ const Tasks = () => {
                 </select>
               </div>
               <div>
+                <label className="block text-sm font-medium text-foreground mb-1">Status</label>
+                <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring/40">
+                  <option value="todo">To Do</option>
+                  <option value="in_progress">In Progress</option>
+                  <option value="done">Done</option>
+                </select>
+              </div>
+              <div>
                 <label className="block text-sm font-medium text-foreground mb-1">Due Date</label>
                 <input type="date" value={form.due_date} onChange={(e) => setForm({ ...form, due_date: e.target.value })} className="w-full h-10 px-3 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring/40" />
               </div>
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <button type="button" onClick={resetForm} className="h-10 px-4 rounded-lg border border-border text-sm font-medium text-foreground hover:bg-muted transition-colors">Cancel</button>
-              <button type="submit" className="h-10 px-5 gradient-orange rounded-lg text-primary-foreground text-sm font-semibold shadow-orange">Create Task</button>
+              <button type="submit" className="h-10 px-5 gradient-orange rounded-lg text-primary-foreground text-sm font-semibold shadow-orange">{editing ? "Update" : "Create Task"}</button>
             </div>
           </form>
         </DialogContent>
